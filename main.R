@@ -6,3 +6,5 @@ devtools::load_all()
 
 
 x <- i_read_spss("tests/testdata/iSpssData.sav")
+
+stats::setNames()

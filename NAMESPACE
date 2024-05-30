@@ -3,3 +3,4 @@
 export(i_read_spss)
 importFrom(foreign,read.spss)
 importFrom(ilabelled,i_labelled)
+importFrom(stats,setNames)
