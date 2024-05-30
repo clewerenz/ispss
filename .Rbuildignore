@@ -2,3 +2,6 @@
 ^renv\.lock$
 ^ispss\.Rproj$
 ^\.Rproj\.user$
+^LICENSE\.md$
+^main.R
+^data$
