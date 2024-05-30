@@ -26,6 +26,7 @@
 #' @param return_data_frame return data as data.frame or list
 #' @param ... arguments passed to foreign::read.spss
 #' @importFrom ilabelled i_labelled
+#' @importFrom stats setNames
 #' @return data.frame
 #' @export
 i_read_spss <- function(file, trim_values = T, sort_value_labels = T, return_data_frame = T, ...){
@@ -47,9 +48,9 @@ i_read_spss <- function(file, trim_values = T, sort_value_labels = T, return_dat
     na_range_i <- na_range[[i]]
     
     if(is.numeric(data[[i]])){
-      labels_i <- setNames(as.numeric(labels_i), names(labels_i))
+      labels_i <- stats::setNames(as.numeric(labels_i), names(labels_i))
     }else{
-      labels_i <- setNames(as.character(labels_i), names(labels_i))
+      labels_i <- stats::setNames(as.character(labels_i), names(labels_i))
     }
     
     if(sort_value_labels){
