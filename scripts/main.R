@@ -4,7 +4,8 @@ library(ilabelled)
 
 devtools::load_all()
 
+myData <- readRDS("tests/testdata/iSpssDataForOutput.rds")
+myMeta <- .get_metainformation(myData)
 
-x <- i_read_spss("tests/testdata/iSpssData.sav")
 
-stats::setNames()
+
