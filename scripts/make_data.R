@@ -15,4 +15,7 @@ myData$nudelmag <- myData$nudelmag |>
 myData$groe <- myData$groe |>
   i_scale("scale")
 
+myData$state <- myData$state |>
+  i_na_values("")
+
 saveRDS(myData, file = "tests/testdata/iSpssDataForOutput.rds")

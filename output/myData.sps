@@ -84,3 +84,31 @@ EXECUTE.
 
 * ---------------------------------------------------------------- *
 
+* SET MISSING RANGE
+
+MISSING VALUES alter (-9 THRU -1).
+
+EXECUTE.
+
+* ---------------------------------------------------------------- *
+
+* SET MISSING VALUES *
+
+MISSING VALUES gewi (-9).
+MISSING VALUES nudelso (-9).
+MISSING VALUES state ('').
+
+EXECUTE.
+
+* ---------------------------------------------------------------- *
+
+* SET VARIABLE LEVELS *
+
+VARIABLE LEVEL geschl (NOMINAL).
+VARIABLE LEVEL nudelmag (ORDINAL).
+VARIABLE LEVEL groe (SCALE).
+
+EXECUTE.
+
+* ---------------------------------------------------------------- *
+

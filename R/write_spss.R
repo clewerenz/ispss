@@ -3,14 +3,19 @@
 #' @param x data.frame
 #' @param data file path for data file
 #' @param syntax file path for syntax file
+#' @param dec decimal point
 #' @param delimiter delimiter used in data file
 #' @param qualifier how to deal with embedded double quotes
 #' @param encoding file encoding
 #' @param ... not used
 #' @returns no return value. writes data and spss syntax to file.
 #' @importFrom utils write.table
-i_write_spss <- function(x, data, syntax, delimiter = "\t", qualifier = c("double","excape"), encoding = "UTF-8", ...){
+#' @importFrom ilabelled is.i_labelled
+#' @importFrom ilabelled i_to_base_class
+i_write_spss <- function(x, data, syntax, dec = c(".",","), delimiter = c("\t",",",";","~"), qualifier = c("double","escape"), encoding = "UTF-8", ...){
   
+  delimiter <- match.arg(delimiter)
+  dec <- match.arg(dec)
   qualifier <- match.arg(qualifier)
   
   # extract meta-information
@@ -28,10 +33,12 @@ i_write_spss <- function(x, data, syntax, delimiter = "\t", qualifier = c("doubl
   x[] <- lapply(x, function(x){
     if(is.factor(x)){
       as.numeric(x)
+    }else if(dec != "." && ilabelled::is.i_labelled(x)){
+      ilabelled::i_to_base_class(x, missing_to_na = F, as_factor = F, keep_attributes = F)
     }else if(!is.numeric(x)){
       as.character(x)
     }else if(!is.character(x) && !is.numeric(x)){
-      stop("missing class conversion")
+      stop("class conversion not yet implemented")
     }else{
       x
     }
@@ -41,6 +48,7 @@ i_write_spss <- function(x, data, syntax, delimiter = "\t", qualifier = c("doubl
   s_read_data <- .spss_syntax_read_data_file(
     formats = meta$format, 
     path = data, 
+    dec = dec,
     delimiter = delimiter,
     qualifier = qualifier,
     encoding = encoding
@@ -52,11 +60,23 @@ i_write_spss <- function(x, data, syntax, delimiter = "\t", qualifier = c("doubl
   # make syntax for varlue-labels
   s_add_val_labs <- .spss_syntax_value_labels(meta$labels)
   
+  # make syntax for missing-range
+  s_add_na_range <- .spss_syntax_missing_range(meta$na_range)
+  
+  # make syntax for missing-values
+  s_add_na_values <- .spss_syntax_missing_values(meta$na_values)
+  
+  # make syntax for variable-level
+  s_add_var_level <- .spss_syntax_variable_level(meta$scale)
+  
   # concatenate syntax parts
   s <- c(
     s_read_data,
     s_add_var_labs,
-    s_add_val_labs
+    s_add_val_labs,
+    s_add_na_range,
+    s_add_na_values,
+    s_add_var_level
   )
   
   # write data
@@ -64,6 +84,7 @@ i_write_spss <- function(x, data, syntax, delimiter = "\t", qualifier = c("doubl
     x = x, 
     file = data, 
     sep = delimiter, 
+    dec = dec,
     col.names = TRUE, 
     row.names = FALSE, 
     qmethod = qualifier, # "double"
@@ -76,7 +97,6 @@ i_write_spss <- function(x, data, syntax, delimiter = "\t", qualifier = c("doubl
     text = s,
     con = syntax
   )
-  
 }
 
 
@@ -84,21 +104,27 @@ i_write_spss <- function(x, data, syntax, delimiter = "\t", qualifier = c("doubl
 #' @export
 #' @param formats named list with spss format for each variable
 #' @param path file path
+#' @param dec decimal point
 #' @param delimiter delimiter used in data file
 #' @param qualifier how to deal with embedded double quotes
 #' @param encoding file encoding
 #' @returns character vector with SPSS syntax
-.spss_syntax_read_data_file <- function(formats, path, delimiter = "\t", qualifier = c("double","excape"), encoding = "UTF-8"){
-  if(!is.null(qualifier)){
-    qualifier <- ifelse(qualifier == "double", '"', "'")  
-  }
+.spss_syntax_read_data_file <- function(formats, path, dec = c(".", ","), delimiter = c("\t",",",";","~"), qualifier = c("double","escape"), encoding = "UTF-8"){
+
+  delimiter <- match.arg(delimiter)
+    
+  dec <- match.arg(dec)
+  dec <- ifelse(dec == ".", "DOT", "COMMA")
+  
+  qualifier <- match.arg(qualifier)  
+  qualifier <- ifelse(qualifier == "double", '"', "'")  
   
   bn <- basename(path)
   dataset_name <- sub("\\.", "", bn)
   
   c(
     "",
-    "SET DECIMAL=DOT.",
+    paste0("SET DECIMAL=", dec, "."),
     "",
     "* IMPORT DATA FROM FILE *", 
     "",
@@ -150,7 +176,7 @@ i_write_spss <- function(x, data, syntax, delimiter = "\t", qualifier = c("doubl
 
 
 #' prepare syntax: set value-labels
-#' @param label named list with variable-labels
+#' @param labels named list with value-labels
 #' @returns character vector with SPSS syntax
 #' @export
 .spss_syntax_value_labels <- function(labels){
@@ -172,5 +198,78 @@ i_write_spss <- function(x, data, syntax, delimiter = "\t", qualifier = c("doubl
       "* ---------------------------------------------------------------- *",
       ""
     )  
+  }
+}
+
+
+
+#' prepare syntax: set missing-range
+#' @param na_range named list with missing-ranges
+#' @returns character vector with SPSS syntax
+#' @export
+.spss_syntax_missing_range <- function(na_range){
+  if(length(na_range)){
+    c(
+      "* SET MISSING RANGE",
+      "",
+      unlist(lapply(names(na_range), function(x){
+        paste0("MISSING VALUES ", x, " (", na_range[[x]][1], " THRU ", na_range[[x]][2], ").")
+      })),
+      "",
+      "EXECUTE.",
+      "",
+      "* ---------------------------------------------------------------- *",
+      ""
+    )  
+  }
+}
+
+
+
+#' prepare syntax: set missing-values
+#' @param na_values named list with missing-values
+#' @returns character vector with SPSS syntax
+#' @export
+.spss_syntax_missing_values <- function(na_values){
+  if(length(na_values) > 0){
+    c(
+      "* SET MISSING VALUES *",
+      "",
+      unlist(lapply(names(na_values), function(x){
+        if(is.character(na_values[[x]])){
+          paste0("MISSING VALUES ", x, " (\'", paste0(na_values[[x]], collapse = "\', \'"), "\').")
+        }else{
+          paste0("MISSING VALUES ", x, " (", paste0(na_values[[x]], collapse = ", "), ").") 
+        }
+      })),
+      "",
+      "EXECUTE.",
+      "",
+      "* ---------------------------------------------------------------- *",
+      ""
+    )
+  }
+}
+
+
+
+#' prepare syntax: set variable-level
+#' @param scale named list with variable-level
+#' @returns character vector with SPSS syntax
+#' @export
+.spss_syntax_variable_level <- function(scale){
+  if(length(scale) > 0){
+    c(
+      "* SET VARIABLE LEVELS *",
+      "",
+      unlist(lapply(names(scale), function(x){
+        paste0("VARIABLE LEVEL ", x, " (", toupper(scale[[x]]), ").")
+      })),
+      "",
+      "EXECUTE.",
+      "",
+      "* ---------------------------------------------------------------- *",
+      ""
+    )
   }
 }
