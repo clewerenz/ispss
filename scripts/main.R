@@ -6,5 +6,6 @@ devtools::load_all()
 
 myData <- readRDS("tests/testdata/iSpssDataForOutput.rds")
 myMeta <- .get_metainformation(myData)
-myMeta$label
+myFormat <- .get_spss_format(myData)
+
 

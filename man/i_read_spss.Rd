@@ -9,6 +9,7 @@ i_read_spss(
   trim_values = T,
   sort_value_labels = T,
   return_data_frame = T,
+  warn = TRUE,
   ...
 )
 }
@@ -20,6 +21,8 @@ i_read_spss(
 \item{sort_value_labels}{sort value labels}
 
 \item{return_data_frame}{return data as data.frame or list}
+
+\item{warn}{show warnings}
 
 \item{...}{arguments passed to foreign::read.spss}
 }
