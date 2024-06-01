@@ -7,5 +7,11 @@ devtools::load_all()
 myData <- readRDS("tests/testdata/iSpssDataForOutput.rds")
 myMeta <- .get_metainformation(myData)
 
+# myData$groe <- as.numeric(myData$groe)
 
+i_write_spss(
+  x = myData, 
+  data = "/home/lnx/Documents/ispss/output/myData.dat", 
+  syntax = "/home/lnx/Documents/ispss/output/myData.sps",
+)
 

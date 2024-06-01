@@ -6,3 +6,4 @@
 ^main.R
 ^data$
 ^scripts$
+^output$

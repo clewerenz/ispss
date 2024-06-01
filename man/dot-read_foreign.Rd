@@ -6,9 +6,10 @@
 \usage{
 .read_foreign(
   file,
-  trim_values = T,
-  to.data.frame = F,
-  use.value.labels = F,
+  trim_values = TRUE,
+  to.data.frame = FALSE,
+  use.value.labels = FALSE,
+  warn = TRUE,
   ...
 )
 }
@@ -20,6 +21,8 @@
 \item{to.data.frame}{convert list to data.frame}
 
 \item{use.value.labels}{convert to factor when data has value labels}
+
+\item{warn}{show warnings}
 
 \item{...}{arguments passed to foreign::read.spss}
 }
