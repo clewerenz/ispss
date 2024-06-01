@@ -11,6 +11,8 @@
 #' @importFrom utils write.table
 i_write_spss <- function(x, data, syntax, delimiter = "\t", qualifier = c("double","excape"), encoding = "UTF-8", ...){
   
+  qualifier <- match.arg(qualifier)
+  
   # extract meta-information
   meta <- .get_metainformation(x)  
   ## remove list entries without values
@@ -36,14 +38,27 @@ i_write_spss <- function(x, data, syntax, delimiter = "\t", qualifier = c("doubl
   })
   
   # make syntax for SPSS data import
-  s <- .spss_syntax_read_data_file(
+  s_read_data <- .spss_syntax_read_data_file(
     formats = meta$format, 
     path = data, 
     delimiter = delimiter,
     qualifier = qualifier,
     encoding = encoding
   )
-
+  
+  # make syntax for variable-labels
+  s_add_var_labs <- .spss_syntax_variable_labels(meta$label)
+  
+  # make syntax for varlue-labels
+  s_add_val_labs <- .spss_syntax_value_labels(meta$labels)
+  
+  # concatenate syntax parts
+  s <- c(
+    s_read_data,
+    s_add_var_labs,
+    s_add_val_labs
+  )
+  
   # write data
   utils::write.table(
     x = x, 
@@ -51,7 +66,7 @@ i_write_spss <- function(x, data, syntax, delimiter = "\t", qualifier = c("doubl
     sep = delimiter, 
     col.names = TRUE, 
     row.names = FALSE, 
-    qmethod = "double", 
+    qmethod = qualifier, # "double"
     fileEncoding = encoding,
     quote = TRUE
   )
@@ -78,6 +93,9 @@ i_write_spss <- function(x, data, syntax, delimiter = "\t", qualifier = c("doubl
     qualifier <- ifelse(qualifier == "double", '"', "'")  
   }
   
+  bn <- basename(path)
+  dataset_name <- sub("\\.", "", bn)
+  
   c(
     "",
     "SET DECIMAL=DOT.",
@@ -98,8 +116,61 @@ i_write_spss <- function(x, data, syntax, delimiter = "\t", qualifier = c("doubl
     ".", 
     "",
     "* ---------------------------------------------------------------- *",
+    "",
+    paste0("DATASET NAME ", dataset_name, "."),
+    paste0("DATASET ACTIVATE ", dataset_name, "."), 
+    "",
+    "* ---------------------------------------------------------------- *",
     ""
-  )  
+  )
 }
 
 
+
+#' prepare syntax: set variable-labels
+#' @param label named list with variable-labels
+#' @returns character vector with SPSS syntax
+#' @export
+.spss_syntax_variable_labels <- function(label){
+  if(length(label) > 0){
+    c(
+      "* SET VARIABLE LABELS *",
+      "",
+      "VARIABLE LABELS",
+      unlist(lapply(names(label), function(x){paste0(" ", x, ' "', label[[x]], '"')})),
+      ".",
+      "EXECUTE.",
+      "",
+      "* ---------------------------------------------------------------- *",
+      ""
+    )  
+  }  
+}
+
+
+
+#' prepare syntax: set value-labels
+#' @param label named list with variable-labels
+#' @returns character vector with SPSS syntax
+#' @export
+.spss_syntax_value_labels <- function(labels){
+  if(length(labels) > 0){
+    c(
+      "* SET VALUE LABELS *",
+      "",
+      unlist(lapply(names(labels), function(x){
+        c(paste("VALUE LABELS", x),
+          unlist(lapply(seq(labels[[x]]), function(y){
+            paste0(" ", unname(labels[[x]][y]), ' "', names(labels[[x]][y]), '"')
+          })),
+          ".",
+          ""
+        )
+      })),
+      "EXECUTE.",
+      "",
+      "* ---------------------------------------------------------------- *",
+      ""
+    )  
+  }
+}

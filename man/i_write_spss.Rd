@@ -30,7 +30,7 @@ i_write_spss(
 \item{...}{not used}
 }
 \value{
-something
+no return value. writes data and spss syntax to file.
 }
 \description{
 write SPSS syntax
