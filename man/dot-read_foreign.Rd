@@ -24,9 +24,10 @@
 \item{...}{arguments passed to foreign::read.spss}
 }
 \value{
-List with Data
+data as list or data.frame
 }
 \description{
 Wrapper for foreign::read.spss.
+
 Read SPSS Daten files before adding class i_labelled.
 }

@@ -24,9 +24,10 @@ i_read_spss(
 \item{...}{arguments passed to foreign::read.spss}
 }
 \value{
-data.frame
+data as list or data.frame
 }
 \description{
 Read SPSS data files and add class i_labelled.
+
 Wrapper for foreign::read.spss.
 }
