@@ -2,6 +2,7 @@
 
 export(.get_metainformation)
 export(.get_spss_format)
+export(.read_foreign)
 export(.spss_syntax_missing_range)
 export(.spss_syntax_missing_values)
 export(.spss_syntax_read_data_file)
