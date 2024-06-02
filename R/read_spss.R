@@ -1,8 +1,8 @@
 #' Read data via R foreign
 #' @description
-#' Wrapper for foreign::read.spss.
+#' wrapper for foreign::read.spss.
 #' 
-#' Read SPSS Daten files before adding class i_labelled.
+#' read SPSS Daten files
 #' 
 #' @param file file path
 #' @param trim_values trim trailing spaces from value labels
@@ -12,6 +12,7 @@
 #' @param ... arguments passed to foreign::read.spss
 #' @importFrom foreign read.spss
 #' @returns data as list or data.frame
+#' @export
 .read_foreign <- function(file, trim_values = TRUE, to.data.frame = FALSE, use.value.labels = FALSE, warn = TRUE, ...){
   if(warn){
     foreign::read.spss(file, use.value.labels = use.value.labels, to.data.frame = to.data.frame, trim_values = trim_values, ...)  
@@ -23,9 +24,9 @@
 
 #' Read SPSS file
 #' @description
-#' Read SPSS data files and add class i_labelled.
+#' read SPSS data files and add class i_labelled.
 #' 
-#' Wrapper for foreign::read.spss.
+#' wrapper for foreign::read.spss.
 #' 
 #' @param file file path
 #' @param trim_values trim trailing spaces from value labels
@@ -37,7 +38,7 @@
 #' @importFrom stats setNames
 #' @returns data as list or data.frame
 #' @export
-i_read_spss <- function(file, trim_values = T, sort_value_labels = T, return_data_frame = T, warn = TRUE, ...){
+i_read_spss <- function(file, trim_values = TRUE, sort_value_labels = TRUE, return_data_frame = TRUE, warn = TRUE, ...){
   
   data <- .read_foreign(file, trim_values = trim_values, warn = warn, ...)
   
@@ -62,7 +63,7 @@ i_read_spss <- function(file, trim_values = T, sort_value_labels = T, return_dat
     }
     
     if(sort_value_labels){
-      labels_i <- sort(labels_i, decreasing = F) 
+      labels_i <- sort(labels_i, decreasing = FALSE) 
     }
     
     # add class i_labelled

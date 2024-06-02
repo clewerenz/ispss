@@ -4,10 +4,12 @@ library(ilabelled)
 
 devtools::load_all()
 
+myData <- foreign::read.spss("tests/testdata/iSpssData.sav")
+myData <- .read_foreign("tests/testdata/iSpssData.sav")
+myData <- i_read_spss("tests/testdata/iSpssData.sav")
 myData <- readRDS("tests/testdata/iSpssDataForOutput.rds")
 myMeta <- .get_metainformation(myData)
 
-# myData$groe <- as.numeric(myData$groe)
 
 i_write_spss(
   x = myData, 

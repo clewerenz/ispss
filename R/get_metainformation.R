@@ -71,7 +71,7 @@
 #' @param x data.frame
 #' @param ... not used
 #' @importFrom ilabelled is_decimal
-#' @return list
+#' @returns list
 #' @export
 .get_spss_format <- function(x, ...){
   lapply(x, function(x){
@@ -84,7 +84,7 @@
         "F8.0"
       }
     }else if(is.character(x)){
-      fmt_len <- max(nchar(x, keepNA = F), na.rm = T)
+      fmt_len <- max(nchar(x, keepNA = FALSE), na.rm = TRUE)
       fmt_len <- ifelse(fmt_len <= 20, "A25", paste0("A", fmt_len + 5))
       fmt_len
     }else{
