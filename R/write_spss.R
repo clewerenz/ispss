@@ -34,7 +34,7 @@ i_write_spss <- function(x, data, syntax, dec = c(".",","), delimiter = c("\t","
     if(is.factor(x)){
       as.numeric(x)
     }else if(dec != "." && ilabelled::is.i_labelled(x)){
-      ilabelled::i_to_base_class(x, missing_to_na = F, as_factor = F, keep_attributes = F)
+      ilabelled::i_to_base_class(x, missing_to_na = FALSE, as_factor = FALSE, keep_attributes = FALSE)
     }else if(!is.numeric(x)){
       as.character(x)
     }else if(!is.character(x) && !is.numeric(x)){
