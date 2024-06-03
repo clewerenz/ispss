@@ -31,6 +31,7 @@
 #' @param file file path
 #' @param trim_values trim trailing spaces from value labels
 #' @param sort_value_labels sort value labels
+#' @param fix_duplicate_labels duplicate value labels will be fixed: replace "" with value; replace duplicate labels with label + '_duplicated_' + value
 #' @param return_data_frame return data as data.frame or list
 #' @param warn show warnings
 #' @param ... arguments passed to foreign::read.spss
@@ -38,7 +39,7 @@
 #' @importFrom stats setNames
 #' @returns data as list or data.frame
 #' @export
-i_read_spss <- function(file, trim_values = TRUE, sort_value_labels = TRUE, return_data_frame = TRUE, warn = TRUE, ...){
+i_read_spss <- function(file, trim_values = TRUE, sort_value_labels = TRUE, fix_duplicate_labels = TRUE, return_data_frame = TRUE, warn = TRUE, ...){
   
   data <- .read_foreign(file, trim_values = trim_values, warn = warn, ...)
   
@@ -60,6 +61,13 @@ i_read_spss <- function(file, trim_values = TRUE, sort_value_labels = TRUE, retu
       labels_i <- stats::setNames(as.numeric(labels_i), names(labels_i))
     }else{
       labels_i <- stats::setNames(as.character(labels_i), names(labels_i))
+    }
+    
+    if(fix_duplicate_labels && any(empty_labels <- names(labels_i) %in% "")){
+      names(labels_i)[empty_labels] <- unname(labels_i[empty_labels])  
+    }
+    if(fix_duplicate_labels && any(dup_labels <- duplicated(names(labels_i)))){
+      names(labels_i)[dup_labels] <- paste0(names(labels_i)[dup_labels], "_duplicated_", labels_i[dup_labels])
     }
     
     if(sort_value_labels){

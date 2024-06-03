@@ -8,6 +8,7 @@ i_read_spss(
   file,
   trim_values = TRUE,
   sort_value_labels = TRUE,
+  fix_duplicate_labels = TRUE,
   return_data_frame = TRUE,
   warn = TRUE,
   ...
@@ -19,6 +20,8 @@ i_read_spss(
 \item{trim_values}{trim trailing spaces from value labels}
 
 \item{sort_value_labels}{sort value labels}
+
+\item{fix_duplicate_labels}{duplicate value labels will be fixed: replace "" with value; replace duplicate labels with label + '\emph{duplicated}' + value}
 
 \item{return_data_frame}{return data as data.frame or list}
 
