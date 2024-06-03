@@ -87,7 +87,7 @@ i_write_spss <- function(x, data, syntax, dec = c(".",","), delimiter = c("\t","
     dec = dec,
     col.names = TRUE, 
     row.names = FALSE, 
-    qmethod = qualifier, # "double"
+    qmethod = qualifier,
     fileEncoding = encoding,
     quote = TRUE
   )
