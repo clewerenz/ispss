@@ -2,7 +2,9 @@
 #' @description
 #' wrapper for foreign::read.spss.
 #' 
-#' read SPSS Daten files
+#' read SPSS data files
+#' 
+#' internal function for i_read_spss
 #' 
 #' @param file file path
 #' @param trim_values trim trailing spaces from value labels
@@ -41,28 +43,33 @@
 #' @export
 i_read_spss <- function(file, trim_values = TRUE, sort_value_labels = TRUE, fix_duplicate_labels = TRUE, return_data_frame = TRUE, warn = TRUE, ...){
   
-  data <- .read_foreign(file, trim_values = trim_values, warn = warn, ...)
+  # read spss data file
+  data <- .read_foreign(file, trim_values = trim_values, warn = warn, to.data.frame = FALSE, use.value.labels = FALSE, ...)
   
-  # get metadata
+  # get metadata via attributes
   label <- attr(data, "variable.labels", exact = TRUE)
   labels <- attr(data, "label.table", exact = TRUE)
   na <- attr(data, "missings", exact = TRUE)
   na_values <- lapply(na, function(x){ if(x$type == "one"){ x$value }else{ NULL } })
   na_range <- lapply(na, function(x){ if(x$type == "range"){ x$value }else{ NULL } })
   
-  # apply metadata
+  # apply metadata for each variable
   for(i in names(data)){
+    
+    # get metadata for current var
     label_i <- label[[i]]
     labels_i <- labels[[i]]
     na_values_i <- na_values[[i]]
     na_range_i <- na_range[[i]]
     
+    # make value-labels correct format for i_labelled
     if(is.numeric(data[[i]])){
       labels_i <- stats::setNames(as.numeric(labels_i), names(labels_i))
     }else{
       labels_i <- stats::setNames(as.character(labels_i), names(labels_i))
     }
     
+    # fix value-labels
     if(fix_duplicate_labels && any(empty_labels <- names(labels_i) %in% "")){
       names(labels_i)[empty_labels] <- unname(labels_i[empty_labels])  
     }
@@ -70,6 +77,7 @@ i_read_spss <- function(file, trim_values = TRUE, sort_value_labels = TRUE, fix_
       names(labels_i)[dup_labels] <- paste0(names(labels_i)[dup_labels], "_duplicated_", labels_i[dup_labels])
     }
     
+    # sort value-labels
     if(sort_value_labels){
       labels_i <- sort(labels_i, decreasing = FALSE) 
     }

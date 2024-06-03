@@ -32,5 +32,7 @@ data as list or data.frame
 \description{
 wrapper for foreign::read.spss.
 
-read SPSS Daten files
+read SPSS data files
+
+internal function for i_read_spss
 }
