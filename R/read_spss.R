@@ -71,9 +71,11 @@ i_read_spss <- function(file, trim_values = TRUE, sort_value_labels = TRUE, fix_
     
     # fix value-labels
     if(fix_duplicate_labels && any(empty_labels <- names(labels_i) %in% "")){
+      if(warn) warning("empty value labels in ", i, ": replace empty labels with values")
       names(labels_i)[empty_labels] <- unname(labels_i[empty_labels])  
     }
     if(fix_duplicate_labels && any(dup_labels <- duplicated(names(labels_i)))){
+      if(warn) warning("duplicate value labels in ", i, ": add suffix '_duplicated_[value]' to labels")
       names(labels_i)[dup_labels] <- paste0(names(labels_i)[dup_labels], "_duplicated_", labels_i[dup_labels])
     }
     
