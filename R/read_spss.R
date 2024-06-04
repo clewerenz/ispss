@@ -69,19 +69,21 @@ i_read_spss <- function(file, trim_values = TRUE, sort_value_labels = TRUE, fix_
       labels_i <- stats::setNames(as.character(labels_i), names(labels_i))
     }
     
-    # fix value-labels
+    # fix empty value-labels
     if(fix_duplicate_labels && any(empty_labels <- names(labels_i) %in% "")){
       if(warn) warning("empty value labels in ", i, ": replace empty labels with values")
       names(labels_i)[empty_labels] <- unname(labels_i[empty_labels])  
-    }
-    if(fix_duplicate_labels && any(dup_labels <- duplicated(names(labels_i)))){
-      if(warn) warning("duplicate value labels in ", i, ": add suffix '_duplicated_[value]' to labels")
-      names(labels_i)[dup_labels] <- paste0(names(labels_i)[dup_labels], "_duplicated_", labels_i[dup_labels])
     }
     
     # sort value-labels
     if(sort_value_labels){
       labels_i <- sort(labels_i, decreasing = FALSE) 
+    }
+    
+    # fix duplicate value-labels
+    if(fix_duplicate_labels && any(dup_labels <- duplicated(names(labels_i)))){
+      if(warn) warning("duplicate value labels in ", i, ": add suffix '_duplicated_[value]' to labels")
+      names(labels_i)[dup_labels] <- paste0(names(labels_i)[dup_labels], "_duplicated_", labels_i[dup_labels])
     }
     
     # add class i_labelled
