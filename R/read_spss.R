@@ -50,9 +50,9 @@ i_read_spss <- function(file, trim_values = TRUE, sort_value_labels = TRUE, fix_
   label <- attr(data, "variable.labels", exact = TRUE)
   labels <- attr(data, "label.table", exact = TRUE)
   na <- attr(data, "missings", exact = TRUE)
-  na_values <- lapply(na, function(x){ if(x$type == "one"){ x$value }else{ NULL } })
+  na_values <- lapply(na, function(x){ if(any(x$type %in% c("one", "two", "three"))){ x$value }else{ NULL } })
   na_range <- lapply(na, function(x){ if(x$type == "range"){ x$value }else{ NULL } })
-  
+ 
   # apply metadata for each variable
   for(i in names(data)){
     
@@ -87,23 +87,27 @@ i_read_spss <- function(file, trim_values = TRUE, sort_value_labels = TRUE, fix_
     }
     
     # add class i_labelled
-    if(is.numeric(data[[i]])){
-      data[[i]] <- ilabelled::i_labelled(
-        x = data[[i]], 
-        label = label_i,
-        labels = labels_i, 
-        na_values = na_values_i,
-        na_range = na_range_i,
-      )      
-    }else{
-      data[[i]] <- ilabelled::i_labelled(
-        x = trimws(data[[i]]), 
-        label = label_i,
-        labels = labels_i, 
-        na_values = na_values_i,
-        na_range = na_range_i,
-      )  
-    }
+    tryCatch({
+      if(is.numeric(data[[i]])){
+        data[[i]] <- ilabelled::i_labelled(
+          x = data[[i]], 
+          label = label_i,
+          labels = labels_i, 
+          na_values = na_values_i,
+          na_range = na_range_i,
+        )      
+      }else{
+        data[[i]] <- ilabelled::i_labelled(
+          x = trimws(data[[i]]), 
+          label = label_i,
+          labels = labels_i, 
+          na_values = na_values_i,
+          na_range = na_range_i,
+        )  
+      }  
+    }, error = function(e){
+      stop("error at ", i, ": ", e$message)
+    })
   }
   
   if(return_data_frame){
