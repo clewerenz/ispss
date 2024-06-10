@@ -11,7 +11,6 @@ i_read_spss(
   fix_duplicate_labels = TRUE,
   return_data_frame = TRUE,
   warn = TRUE,
-  fix_char_cols = FALSE,
   ...
 )
 }
@@ -27,8 +26,6 @@ i_read_spss(
 \item{return_data_frame}{return data as data.frame or list}
 
 \item{warn}{show warnings}
-
-\item{fix_char_cols}{character column split by foreign are merged when in sequential order}
 
 \item{...}{arguments passed to foreign::read.spss}
 }
