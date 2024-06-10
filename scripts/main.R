@@ -4,4 +4,6 @@ library(ilabelled)
 
 devtools::load_all()
 
-x <- i_read_spss("tests/testdata/iSpssData.sav",return_data_frame = F)
+x <- i_read_spss("tests/testdata/iSpssData.sav")
+
+i_write_spss(x = x, data = "output/myData.dat", syntax = "output/myData.sps")
