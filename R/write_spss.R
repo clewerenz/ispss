@@ -66,7 +66,7 @@ i_write_spss <- function(x, data, syntax, dec = c(".",","), delimiter = c("\t","
   # make syntax for variable-labels
   s_add_var_labs <- .spss_syntax_variable_labels(meta$label)
   
-  # make syntax for varlue-labels
+  # make syntax for value-labels
   s_add_val_labs <- .spss_syntax_value_labels(meta$labels)
   
   # make syntax for missing-range
@@ -131,7 +131,7 @@ i_write_spss <- function(x, data, syntax, dec = c(".",","), delimiter = c("\t","
   qualifier <- ifelse(qualifier == "double", '"', "'")  
   
   bn <- basename(path)
-  dataset_name <- sub("\\.", "", bn)
+  dataset_name <- sub("\\..*$", "", bn)
   
   c(
     "",
