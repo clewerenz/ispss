@@ -36,12 +36,13 @@
 #' @param fix_duplicate_labels duplicate value labels will be fixed: replace "" with value; replace duplicate labels with label + '_duplicated_' + value
 #' @param return_data_frame return data as data.frame or list
 #' @param warn show warnings
+#' @param fix_char_cols character column split by foreign are merged when in sequential order
 #' @param ... arguments passed to foreign::read.spss
 #' @importFrom ilabelled i_labelled
 #' @importFrom stats setNames
 #' @returns data as list or data.frame
 #' @export
-i_read_spss <- function(file, trim_values = TRUE, sort_value_labels = TRUE, fix_duplicate_labels = TRUE, return_data_frame = TRUE, warn = TRUE, ...){
+i_read_spss <- function(file, trim_values = TRUE, sort_value_labels = TRUE, fix_duplicate_labels = TRUE, return_data_frame = TRUE, warn = TRUE, fix_char_cols = FALSE, ...){
   
   # read spss data file
   data <- .read_foreign(file, trim_values = trim_values, warn = warn, to.data.frame = FALSE, use.value.labels = FALSE, ...)
@@ -108,6 +109,11 @@ i_read_spss <- function(file, trim_values = TRUE, sort_value_labels = TRUE, fix_
     }, error = function(e){
       stop("error at ", i, ": ", e$message)
     })
+  }
+  
+  # Fix character columns split by foreign
+  if(fix_char_cols){
+    data <- i_fix_char_cols(data, exclude = NULL)
   }
   
   if(return_data_frame){
