@@ -7,12 +7,21 @@
 #' @param delimiter delimiter used in data file
 #' @param qualifier how to deal with embedded double quotes
 #' @param encoding file encoding
+#' @param add_syntax_top add SPSS syntax before the default syntax
+#' @param add_syntax_bottom add SPSS syntax after the default syntax
 #' @param ... not used
 #' @returns no return value. writes data and spss syntax to file.
 #' @importFrom utils write.table
 #' @importFrom ilabelled is.i_labelled
 #' @importFrom ilabelled i_to_base_class
-i_write_spss <- function(x, data, syntax, dec = c(".",","), delimiter = c("\t",",",";","~"), qualifier = c("double","escape"), encoding = "UTF-8", ...){
+i_write_spss <- function(x, data, syntax, dec = c(".",","), delimiter = c("\t",",",";","~"), qualifier = c("double","escape"), encoding = "UTF-8", add_syntax_top = NULL, add_syntax_bottom = NULL, ...){
+  
+  if(!is.null(add_syntax_top) && !is.atomic(add_syntax_top) && !is.character(add_syntax_top)){
+    stop("add_syntax_top must be character vector")
+  }
+  if(!is.null(add_syntax_bottom) && !is.atomic(add_syntax_bottom) && !is.character(add_syntax_bottom)){
+    stop("add_syntax_bottom must be character vector")
+  }
   
   delimiter <- match.arg(delimiter)
   dec <- match.arg(dec)
@@ -71,12 +80,14 @@ i_write_spss <- function(x, data, syntax, dec = c(".",","), delimiter = c("\t","
   
   # concatenate syntax parts
   s <- c(
+    add_syntax_top,
     s_read_data,
     s_add_var_labs,
     s_add_val_labs,
     s_add_na_range,
     s_add_na_values,
-    s_add_var_level
+    s_add_var_level,
+    add_syntax_bottom
   )
   
   # write data
