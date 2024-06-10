@@ -12,6 +12,8 @@ i_write_spss(
   delimiter = c("\\t", ",", ";", "~"),
   qualifier = c("double", "escape"),
   encoding = "UTF-8",
+  add_syntax_top = NULL,
+  add_syntax_bottom = NULL,
   ...
 )
 }
@@ -29,6 +31,10 @@ i_write_spss(
 \item{qualifier}{how to deal with embedded double quotes}
 
 \item{encoding}{file encoding}
+
+\item{add_syntax_top}{add SPSS syntax before the default syntax}
+
+\item{add_syntax_bottom}{add SPSS syntax after the default syntax}
 
 \item{...}{not used}
 }
