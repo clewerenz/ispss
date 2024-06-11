@@ -5,7 +5,7 @@ SET DECIMAL=DOT.
 
 GET DATA
  /TYPE=TXT
- /FILE='/home/lnx/Documents/ispss/output/myData.dat'
+ /FILE='output/myData.dat'
  /ENCODING='UTF-8'
  /QUALIFIER='"'
  /ARRANGEMENT=DELIMITED
@@ -21,13 +21,14 @@ GET DATA
  nudelso F8.0
  alter F8.0
  state A26
- geschl_fac F8.0
+ date F8.0
+ test A25
 .
 
 * ---------------------------------------------------------------- *
 
-DATASET NAME myDatadat.
-DATASET ACTIVATE myDatadat.
+DATASET NAME myData.
+DATASET ACTIVATE myData.
 
 * ---------------------------------------------------------------- *
 
@@ -42,7 +43,7 @@ VARIABLE LABELS
  nudelso "Nudeln und Sosse"
  alter "Alter"
  state "Anmerkung"
- geschl_fac "Geschlecht 2"
+ date "Erhebungsdatum"
 .
 EXECUTE.
 
@@ -75,9 +76,9 @@ VALUE LABELS nudelso
  2 "nein"
 .
 
-VALUE LABELS geschl_fac
- 1 "männlich"
- 2 "weiblich"
+VALUE LABELS test
+ "A" "AA"
+ "B" "BB"
 .
 
 EXECUTE.
@@ -94,19 +95,9 @@ EXECUTE.
 
 * SET MISSING VALUES *
 
-MISSING VALUES gewi (-9).
+MISSING VALUES groe (-9, -8, -7).
+MISSING VALUES gewi (-9, -8).
 MISSING VALUES nudelso (-9).
-MISSING VALUES state ('').
-
-EXECUTE.
-
-* ---------------------------------------------------------------- *
-
-* SET VARIABLE LEVELS *
-
-VARIABLE LEVEL geschl (NOMINAL).
-VARIABLE LEVEL nudelmag (ORDINAL).
-VARIABLE LEVEL groe (SCALE).
 
 EXECUTE.
 

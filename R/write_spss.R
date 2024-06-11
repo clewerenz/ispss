@@ -196,13 +196,23 @@ i_write_spss <- function(x, data, syntax, dec = c(".",","), delimiter = c("\t","
       "* SET VALUE LABELS *",
       "",
       unlist(lapply(names(labels), function(x){
-        c(paste("VALUE LABELS", x),
-          unlist(lapply(seq(labels[[x]]), function(y){
-            paste0(" ", unname(labels[[x]][y]), ' "', names(labels[[x]][y]), '"')
-          })),
-          ".",
-          ""
-        )
+        if(is.character(labels[[x]])){
+          c(paste("VALUE LABELS", x),
+            unlist(lapply(seq(labels[[x]]), function(y){
+              paste0(' "', unname(labels[[x]][y]), '" "', names(labels[[x]][y]), '"')
+            })),
+            ".",
+            ""
+          )  
+        }else{
+          c(paste("VALUE LABELS", x),
+            unlist(lapply(seq(labels[[x]]), function(y){
+              paste0(" ", unname(labels[[x]][y]), ' "', names(labels[[x]][y]), '"')
+            })),
+            ".",
+            ""
+          )  
+        }
       })),
       "EXECUTE.",
       "",
@@ -219,7 +229,7 @@ i_write_spss <- function(x, data, syntax, dec = c(".",","), delimiter = c("\t","
 #' @returns character vector with SPSS syntax
 #' @export
 .spss_syntax_missing_range <- function(na_range){
-  if(length(na_range)){
+  if(length(na_range) > 0){
     c(
       "* SET MISSING RANGE",
       "",
