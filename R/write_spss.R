@@ -121,9 +121,9 @@ i_write_spss <- function(x, data, syntax, dec = c(".",","), delimiter = c("\t","
 #' @param encoding file encoding
 #' @returns character vector with SPSS syntax
 .spss_syntax_read_data_file <- function(formats, path, dec = c(".", ","), delimiter = c("\t",",",";","~"), qualifier = c("double","escape"), encoding = "UTF-8"){
-
+  
   delimiter <- match.arg(delimiter)
-    
+  
   dec <- match.arg(dec)
   dec <- ifelse(dec == ".", "DOT", "COMMA")
   
@@ -253,11 +253,11 @@ i_write_spss <- function(x, data, syntax, dec = c(".",","), delimiter = c("\t","
 #' @export
 .spss_syntax_missing_values <- function(na_values){
   if(length(na_values) > 0){
-    if(length(na_values > 3)) na_values <- na_values[1:3]
     c(
       "* SET MISSING VALUES *",
       "",
       unlist(lapply(names(na_values), function(x){
+        if(length(na_values[[x]] > 3)) na_values[[x]] <- na_values[[x]][1:3]
         if(is.character(na_values[[x]])){
           paste0("MISSING VALUES ", x, " (\'", paste0(na_values[[x]], collapse = "\', \'"), "\').")
         }else{
