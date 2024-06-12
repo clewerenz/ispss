@@ -27,7 +27,12 @@
   label_vars <- lapply(x, function(y) attr(y, "label", exact = TRUE))
   label_data <- lapply(attr(x, "variable.labels", exact = TRUE), function(y) y)
   label_data <- label_data[names(label_data) %in% names(label_vars)]
-  label_vars_miss <- which(unlist(lapply(label_vars, is.null)))
+  label_vars_miss <- unlist(lapply(label_vars, is.null))
+  if(length(label_vars_miss) > 0){
+    label_vars_miss <- which(unlist(lapply(label_vars, is.null)))  
+  }else{
+    label_vars_miss <- NULL
+  }
   label_vars_miss <- names(label_vars[label_vars_miss])
   label <- label_vars
   label[label_vars_miss] <- label_data[label_vars_miss]

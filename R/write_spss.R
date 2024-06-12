@@ -253,6 +253,7 @@ i_write_spss <- function(x, data, syntax, dec = c(".",","), delimiter = c("\t","
 #' @export
 .spss_syntax_missing_values <- function(na_values){
   if(length(na_values) > 0){
+    if(length(na_values > 3)) na_values <- na_values[1:3]
     c(
       "* SET MISSING VALUES *",
       "",
