@@ -257,7 +257,7 @@ i_write_spss <- function(x, data, syntax, dec = c(".",","), delimiter = c("\t","
       "* SET MISSING VALUES *",
       "",
       unlist(lapply(names(na_values), function(x){
-        if(length(na_values[[x]] > 3)) na_values[[x]] <- na_values[[x]][1:3]
+        if(length(na_values[[x]]) > 3) na_values[[x]] <- na_values[[x]][1:3]
         if(is.character(na_values[[x]])){
           paste0("MISSING VALUES ", x, " (\'", paste0(na_values[[x]], collapse = "\', \'"), "\').")
         }else{
