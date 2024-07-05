@@ -58,6 +58,8 @@ i_fix_char_cols <- function(x, exclude = NULL, verbose = TRUE){
       attributes(x[[i]]) <- attr_temp
     }
     x <- subset(x, select = -which(names(x) %in% unlist(cols_to_merge)))
+  }else if(verbose){
+    message("no columns to merge found")
   }
   
   return(x)

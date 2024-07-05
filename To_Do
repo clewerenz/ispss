@@ -1,0 +1,4 @@
+Missing Values:
+  - foreign imports more na types which must be taken into account
+    - see also line 122ff. https://github.com/cran/foreign/blob/master/R/spss.R
+    - see also line 247ff. https://github.com/cran/foreign/blob/master/src/spss.c

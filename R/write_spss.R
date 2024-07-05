@@ -1,3 +1,4 @@
+
 #' write SPSS syntax
 #' @export
 #' @param x data.frame

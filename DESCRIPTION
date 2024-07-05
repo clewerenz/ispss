@@ -1,6 +1,6 @@
 Package: ispss
 Title: SPSS module for ilabelled
-Version: 0.0.0.9000
+Version: 0.0.9
 Authors@R: 
     person("Christof", "Lewerenz", , "christof.lewerenz@gmx.net", role = c("aut", "cre"))
 Description: Read SPSS data files. Write data and syntax for SPSS.
