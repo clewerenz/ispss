@@ -75,15 +75,15 @@
 #' calculate spss format from data
 #' @param x data.frame
 #' @param ... not used
-#' @importFrom ilabelled is_decimal
 #' @returns list
+#' @importFrom stats na.omit
 #' @export
 .get_spss_format <- function(x, ...){
   lapply(x, function(x){
     if(is.factor(x)){
       "F8.0"
     }else if(is.numeric(x)){
-      if(ilabelled::is_decimal(x)){
+      if(any(stats::na.omit(x %% 1 > 0))){
         "F8.2"
       }else{
         "F8.0"

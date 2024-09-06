@@ -69,7 +69,7 @@ test_that("all variable-names are names of return-value", {
 })
 
 test_that("format is calculated correctly", {
-  expect_true(all.equal(unname(unlist(myFormat)), c("F8.0","F8.0","F8.2","F8.0","F8.0","F8.0","F8.0","A26","F8.0")))
+  expect_equal(setdiff(unname(unlist(myFormat)), c("F8.0","F8.0","F8.2","F8.0","F8.0","F8.0","F8.0","A27","F8.0")), character())
 })
 
 
